@@ -46,6 +46,33 @@ def movies():
                 }),200
         return jsonify({"errors":form_errors(form)}),400
 
+@app.route('/api/v1/movies', methods=['GET'])
+def get_movies():
+    getmves = Movies.query.all()
+    mves_list = []
+    for i in getmves:
+        movieinfo = {
+            'id': i.id,
+            'title': i.title,
+            'description': i.description,
+            'poster': f"/api/v1/posters/{i.poster}"
+        }
+        mves_list.append(movieinfo)
+    return jsonify({'movies':mves_list}),200
+
+def get_uploaded_images():
+    import os
+    rootdir = os.getcwd()
+    fileslst = []
+    for subdir, dirs, files in os.walk(rootdir + '/uploads'):
+        for file in files:
+            fileslst.append(file)
+    return fileslst
+
+@app.route('/api/v1/posters/<filename>', methods=['GET'])
+def getposter(filename):
+    return send_from_directory(os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###

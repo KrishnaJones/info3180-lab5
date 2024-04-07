@@ -1,15 +1,22 @@
 <template>
 <div class="container">
+ <h1>Movie Upload Form</h1>
+ <div v-if="success" class="alert alert-success">{{success}}</div>
+ <div v-if="errors.length > 0" class="alert alert-danger">
+    <ul>
+      <li v-for="error in errors" :key="error">{{ error }}</li>
+    </ul>
+ </div>
  <form id="movieForm" @submit.prevent="saveMovie">
   <div class="form-group mb-3">
     <label for="title" class="form-label">Movie Title</label>
     <br>
-    <input type="text" name="title" class="form-control" style="width: 500px;"/>
+    <input type="text" name="title" v-model="title" class="form-control"/>
   </div> 
   <div class="form-group mb-3">
     <label for="description" class="form-label">Movie Description</label>
     <br>
-    <textarea name="description" class="form-control" style="width: 500px; height: 200px;"> </textarea>
+    <textarea name="description" v-model="description" class="form-control"> </textarea>
   </div> 
   <div class="form-group mb-3">
     <label for="poster" class="form-label">Movie Poster</label>
@@ -36,14 +43,10 @@ import { ref, onMounted } from "vue";
         fetch("/api/v1/movies", {
             method: 'POST',
             body: form_data,
-            headers: {
-                'X-CSRFToken': csrf_token.value
-            }
-            })
-            .then(function (response) {
+            headers: {'X-CSRFToken': csrf_token.value}
+            }).then(function (response) {
                 return response.json();
-              }
-            })
+              })
             .then(function (data) {
                 if (data.errors) {
                 errors.value = data.errors;

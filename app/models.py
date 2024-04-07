@@ -1,5 +1,6 @@
 
 from . import db
+from datetime import datetime
 
 class Movies(db.Model):
 
@@ -9,15 +10,14 @@ class Movies(db.Model):
     title = db.Column(db.String(80))
     description = db.Column(db.Text)
     poster = db.Column(db.String(80))
-    created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, default=datetime.now())
     
 
-    def __init__(self, title, description, poster, created_at):
+    def __init__(self, title, description, poster):
         self.title = title
         self.description = description
         self.poster = poster
-        self.created_at = created_at
-
+        
     def get_id(self):
         try:
             return unicode(self.id)  # python 2 support
